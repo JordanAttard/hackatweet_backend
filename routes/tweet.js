@@ -28,4 +28,14 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.get('/trends', async(req, res) => {
+    const trends = await Tweet.aggregate([
+      { $unwind: "$hashtag" },
+      { $group: { _id: "$hashtag", count: { $sum: 1}}},
+      { $sort: { count: -1}}
+    ]);
+
+    res.json(trends)
+})
+
 module.exports = router
